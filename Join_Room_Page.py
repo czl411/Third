@@ -32,7 +32,7 @@ class Join_page():
         if temp:
             messagebox.showinfo('加入成功', f"尊敬的{self.name}用户！\n Welcme to {uuid}")
             self.root.destroy()
-            OLG.Game_page_C('联机PVP',self.uuid,self.name,self.header,1)
+            OLG.Game_page_C('联机PVP',uuid,self.name,self.header,1)
         else:
             messagebox.showerror('加入失败', '对局不存在')
             print(2)

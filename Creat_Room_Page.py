@@ -39,9 +39,11 @@ class Creat_Room_page():
         print(self.uuid)
         if status == True:
             messagebox.showinfo('创建私人房间成功', f"房间号：{self.uuid}")
-            OLG.Game_page_C("联机PVP",self.uuid,self.name,self.header,0)
+            self.root.destroy()
+            OLG.Game_page_C("联机PVP", self.uuid,self.name,self.header,0)
         else:
             messagebox.showinfo('创建公开房间成功', f"房间号：{self.uuid}")
+            self.root.destroy()
             OLG.Game_page_C("联机PVP", self.uuid, self.name,self.header,0)
 
     def back(self):

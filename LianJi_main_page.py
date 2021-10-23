@@ -15,7 +15,9 @@ class Main_page_C():
         self.header=header
         self.mordern = mordern
         self.name =name
+        self.select = 0
         self.creat_page()
+
 
     def creat_page(self):
         pygame.init()
@@ -43,16 +45,26 @@ class Main_page_C():
                 x, y = pygame.mouse.get_pos()
                 if 310 < x <382 and 315 < y < 333 and\
                     event.type == MOUSEBUTTONDOWN:
-                    pygame.quit()
-                    Join_Room_Page.Join_page(self.header,self.name)
+                    self.select = 1
+                    break
                 if 610 < x < 682 and 315 < y < 333 and \
                     event.type == MOUSEBUTTONDOWN:
-                    pygame.quit()
-                    Creat_Room_Page.Creat_Room_page(self.header,self.name)
+                    self.select = 2
+                    break
                 if 40 < x < 120 and 25 < y < 55 and \
                     event.type == MOUSEBUTTONDOWN:
-                    pygame.quit()
-                    Login_page.loginpage()
+                    self.select = 3
+                    break
+            if self.select != 0:
+                break
             pygame.display.update()
             self.clock.tick(30)
+        pygame.quit()
+        if self.select == 1:
+            Join_Room_Page.Join_page(self.header, self.name)
+        elif self.select == 2:
+            Creat_Room_Page.Creat_Room_page(self.header, self.name)
+        elif self.select == 3:
+            Login_page.loginpage()
+
 

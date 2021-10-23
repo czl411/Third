@@ -258,6 +258,7 @@ class Game_page_C():
         pygame.quit()
 
     def Game_over(self):
+        xuanze = 0
         pygame.init()
         pygame.display.set_caption("Game over")
         os.environ['SDL_VIDEO_CENTERED'] = '1'  # 居中显示
@@ -288,12 +289,20 @@ class Game_page_C():
                 x, y = pygame.mouse.get_pos()
                 if 130 < x < 130 +24*4 and 200 < y < 200 +24 and \
                         event.type == MOUSEBUTTONDOWN:
-                    pygame.quit()
-                    Game_page_C('PVP')
+                    xuanze = 1
+                    break
                 if 130+24*6.5 < x < 130 +24*10.5 and 200 < y < 200 +24 and \
                         event.type == MOUSEBUTTONDOWN:
-                    pygame.quit()
-                    Danji_Game_Part.danji_page()
+                    xuanze = 2
+                    break
+            if xuanze != 0:
+                break
             pygame.display.update()
             clock.tick(30)
+
+        pygame.quit()
+        if xuanze == 1:
+            Game_page_C('PVP')
+        elif xuanze== 2:
+            Danji_Game_Part.danji_page()
 

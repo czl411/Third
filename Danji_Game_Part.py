@@ -8,7 +8,9 @@ class danji_page():
     def __init__(self):
         self.Black = (0,0,0)
         self.size = 1012,596
+        self.select = 0
         self.creat_page()
+
 
     def creat_page(self):
         pygame.init()
@@ -45,18 +47,26 @@ class danji_page():
                 x, y = pygame.mouse.get_pos()
                 if x > 60-20 and x < 140-20 and y > 25 and y < 55 and buttons[0] \
                         and event.type == MOUSEBUTTONDOWN:
-                    pygame.quit()
-                    main_page.main_page()
+                    self.select = 1
+                    break
                 if x > 200 and x < 450 and y > 125 and y < 500 and buttons[0] \
                         and event.type == MOUSEBUTTONDOWN:
-                    pygame.quit()
-                    Danji_PVP_Game_page.Game_page_C('PVP')
-
+                    self.select = 2
+                    break
                 if x > 550 and x < 800 and y > 125 and y < 500 and buttons[0] \
                         and event.type == MOUSEBUTTONDOWN:
-                    pygame.quit()
-                    Danji_PVE_Game_page.Game_page_C('PVE')
+                    self.select = 3
+                    break
                 if event.type == QUIT:
                     sys.exit()
             pygame.display.update()
             self.clock.tick(30)
+            if self.select != 0:
+                break
+        pygame.quit()
+        if self.select == 1:
+            main_page.main_page()
+        elif self.select == 2:
+            Danji_PVP_Game_page.Game_page_C('PVP')
+        elif self.select == 3:
+            Danji_PVE_Game_page.Game_page_C('PVE')

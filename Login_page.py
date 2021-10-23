@@ -39,6 +39,7 @@ class loginpage():
         else:
             messagebox.showerror('登录失败', '账户或密码错误')
             print(2)
+
     def back(self):
         self.root.destroy()
         main_page.main_page()

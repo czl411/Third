@@ -1,14 +1,13 @@
 import time
+
 import pygame
 import sys
 from pygame.locals import *
 import json
-
-import Online_game
 from Online_game import *
-import os
 import Online_sort_part
 import LianJi_main_page
+
 class Game_page_C():
     def __init__(self,mordern, uuid, name, header,who):
         self.load()
@@ -38,6 +37,7 @@ class Game_page_C():
         self.qipai_center = (535 * 2 + 80) / 2, (280 * 2 + 110) / 2
         self.cards_center = (405 * 2 + 80) / 2, (280 * 2 + 110) / 2
         self.id = who
+        self.select = 0
         self.creat_page()
         self.Game_over()
 
@@ -92,6 +92,8 @@ class Game_page_C():
         self.SEIMG = pygame.image.load(self.SET_img).convert_alpha()
         self.clock = pygame.time.Clock()
         while(1):
+            buttons = pygame.mouse.get_pressed()  # 存鼠标状态
+            x, y = pygame.mouse.get_pos()
             self.screen.blit(self.background, (-22, 0))
             self.screen.blit(self.GBIMG, (27, 15))
             pygame.draw.rect(self.screen, self.Black, [40, 25, 80, 30], 1)  # fanhui
@@ -106,8 +108,18 @@ class Game_page_C():
                 if event.type == QUIT:
                     pygame.quit()
                     sys.exit()
+                if 40 < x < 120 and 25 < y < 55 and buttons[0] \
+                        and event.type == MOUSEBUTTONDOWN:
+                    self.select = 1
+                    break
+            if self.select != 0:
+                    break
             pygame.display.update()
             self.clock.tick(30)
+        if self.select == 1:
+            pygame.quit()
+            LianJi_main_page.Main_page_C("联机", self.header, self.name)
+
         while(self.Cards.sum):
             res = Online_sort_part.Get_Previous_operation(self.uuid,self.header)
             if res["code"] != 200:
@@ -116,6 +128,7 @@ class Game_page_C():
             self.screen.blit(self.background, (-22, 0))
             self.screen.blit(self.GBIMG, (27, 15))
             self.screen.blit(self.SEIMG, (117, 15))
+
             if len(self.P[self.id].S):
                 self.screen.blit(self.cards1, self.card1_rect)
             if len(self.P[self.id].H):
@@ -164,6 +177,7 @@ class Game_page_C():
             pygame.draw.rect(self.screen, self.Black, [130, 25, 80, 30], 1)  # 设置
             pygame.draw.rect(self.screen, self.Black, [535, 280, 80, 110], 1)  # 弃牌
             pygame.draw.rect(self.screen, self.Black, [405, 280, 80, 110], 1)  # 卡组
+            time.sleep(0.3)
             buttons = pygame.mouse.get_pressed()  # 存鼠标状态
             x, y = pygame.mouse.get_pos()
             for event in pygame.event.get():
@@ -171,10 +185,14 @@ class Game_page_C():
                     sys.exit()
                 if 40 < x < 40+80 and 25 < y <55 and\
                         event.type == MOUSEBUTTONDOWN:
-                    pygame.quit()
-                    LianJi_main_page.Main_page_C("联机",self.header,self.name)
-                if 130 < x < 130+80 and 25<y<25+30 and event.type==MOUSEBUTTONDOWN:
+                    self.select = 1
+                    break
+                if 130 < x < 130+80 and 25<y<25+30 and\
+                        event.type==MOUSEBUTTONDOWN:
                     pass
+            if self.select != 0:
+                break
+
             Last_operation = res["data"]["last_code"]
             Your_Turn = res["data"]["your_turn"]
             if self.State_zh != Your_Turn:
@@ -182,13 +200,17 @@ class Game_page_C():
                 if len(Last_operation) > 0:
                     OP_type = Last_operation[2]
                     card = Last_operation[4:]
+                    self.Cards.Updata_Card_zu(card)
+                    self.Place_Area.Put_in(card)
                     if Your_Turn:
-                        self.Cards.Updata_Card_zu(card)
-                        self.Place_Area.Put_in(card)
-                    if OP_type ==1 :
-                        self.P[1-self.id].Update_Player_Card(card)
-                    if self.Place_Area.Whether_Eat_Cards():
-                        self.P[1-self.id].Eat_Cards(self.Place_Area)
+                        if OP_type ==1 :
+                            self.P[1-self.id].Update_Player_Card(card)
+                        if self.Place_Area.Whether_Eat_Cards():
+                            self.P[1-self.id].Eat_Cards(self.Place_Area)
+                    else:
+                        if self.Place_Area.Whether_Eat_Cards():
+                            self.P[self.id].Eat_Cards(self.Place_Area)
+
             if Your_Turn == True:
                 self.operation = {
                     "type": 0
@@ -198,8 +220,8 @@ class Game_page_C():
                         sys.exit()
                     if 40 < x < 40 + 80 and 25 < y < 55 and \
                             event.type == MOUSEBUTTONDOWN:
-                        pygame.quit()
-                        LianJi_main_page.Main_page_C("联机", self.header, self.name)
+                        self.select = 1
+                        break
                     if 130 < x < 130 + 80 and 25 < y < 25 + 30 \
                             and event.type == MOUSEBUTTONDOWN:
                         pass
@@ -207,25 +229,35 @@ class Game_page_C():
                             event.type == MOUSEBUTTONDOWN and len(self.P[self.id].S) > 0:
                         self.operation["type"] = 1
                         self.operation["card"] = self.P[self.id].Knockout_S()
+                        break
                     if 186 < x <186+70 and 415 <y <515 and \
                             event.type == MOUSEBUTTONDOWN and len(self.P[self.id].H) > 0:
                         self.operation["type"] = 1
                         self.operation["card"] = self.P[self.id].Knockout_H()
+                        break
                     if 262 < x <262+70 and 415 <y <515 and \
                             event.type == MOUSEBUTTONDOWN and len(self.P[self.id].D) > 0:
                         self.operation["type"] = 1
                         self.operation["card"] = self.P[self.id].Knockout_D()
+                        break
                     if 338 < x <338+70 and 415 <y <515 and \
                             event.type == MOUSEBUTTONDOWN and len(self.P[self.id].C) > 0:
                         self.operation["type"] = 1
                         self.operation["card"] = self.P[self.id].Knockout_C()
+                        break
                     if 405 < x <405+80 and 280 <y <280+110 and \
                             event.type == MOUSEBUTTONDOWN:
-                        self.DO_OP(self.P[self.id])
+                        break
+                self.DO_OP(self.P[self.id])
+                if self.select != 0:
+                    break
+
             pygame.display.update()
             self.clock.tick(30)
         pygame.quit()
-
+        if self.select == 1:
+            LianJi_main_page.Main_page_C("联机", self.header, self.name)
+        return
     def Game_over(self):
         res = Online_sort_part.Get_Match_info(self.uuid, self.header)
         if res["data"]["winner"] == self.id:
@@ -269,5 +301,3 @@ class Game_page_C():
         card = res["data"]["last_code"][4:]
         self.Place_Area.Put_in(card)
         self.Cards.Updata_Card_zu(card)
-        if self.Place_Area.Whether_Eat_Cards():
-            P.Eat_Cards(self.Place_Area)

@@ -9,6 +9,7 @@ class welcome_page():
         self.bg_imag = "source/background/Back_Ground4~1.png"
         self.SG_imag = "source/background/Start_Game~1.png"
         self.Logo_img = "source/background/Logo_Big~1.png"
+        self.select = 0
         self.creat_page()
 
     def creat_page(self):
@@ -27,8 +28,14 @@ class welcome_page():
                 if event.type == QUIT:
                     sys.exit()
                 if event.type == MOUSEBUTTONDOWN:
-                    main_page.main_page()
+                    self.select = 1
+                    break
             pygame.display.update()
             self.clock.tick(30)
+            if self.select != 0:
+                break
+        pygame.quit()
+        if self.select == 1:
+            main_page.main_page()
             
 # welcome_page()

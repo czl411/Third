@@ -22,6 +22,7 @@ class main_page():
         self.GB_img = "source/background/Icon_get_back~1.png"
         self.LO_img = "source/background/Logo_Small~1.png"
         self.SET_img = "source/background/Icon_Setting~1.png"
+        self.select = 0
         self.creat_page()
 
     def creat_page(self):
@@ -79,12 +80,12 @@ class main_page():
                     print("设置")
                 if x > 330-20 and x < 530-20 and y > 185 and y < 185 + 290 and buttons[0] and\
                         event.type == MOUSEBUTTONDOWN:
-                    pygame.quit()
-                    Danji_Game_Part.danji_page()
+                    self.select = 1
+                    break
                 if x > 535-20 and x < 745-20 and y > 185 and y < 185 + 140 and buttons[0] and\
                         event.type == MOUSEBUTTONDOWN:
-                    pygame.quit()
-                    loginpage()
+                    self.select = 2
+                    break
                 if x > 535-20 and x < 745-20 and y > 335 and y < 335 + 140 and buttons[0] and\
                         event.type == MOUSEBUTTONDOWN:
                     print("关于")
@@ -94,21 +95,12 @@ class main_page():
                 if x > 750-20 and x < 960-20 and y > 335 and y < 335 + 140 and buttons[0] and\
                         event.type == MOUSEBUTTONDOWN:
                     print("更多")
-
-                if event.type == KEYDOWN:
-                    self.keyboard_sound.play()
-                    if event.key == K_ESCAPE:
-                        sys.exit()
-                    if event.key == K_UP:
-                        self.bgm_high += 0.05
-                    if event.key == K_DOWN:
-                        self.bgm_high -= 0.05
-                    if event.key == K_LEFT:
-                        self.sound_high += 0.05
-                    if event.key == K_RIGHT:
-                        self.sound_high -= 0.05
-                pygame.mixer.music.set_volume(self.bgm_high)
-                self.mouse_sound.set_volume(self.sound_high)
-                self.keyboard_sound.set_volume(self.sound_high)
             pygame.display.update()
             self.clock.tick(30)
+            if self.select != 0:
+                pygame.quit()
+                break
+        if self.select == 1:
+            Danji_Game_Part.danji_page()
+        elif self.select == 2:
+            loginpage()
